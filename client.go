@@ -200,6 +200,7 @@ func (c *Client) LoadResponse(path string, i interface{}, options map[string]str
 	}
 
 	if err := json.Unmarshal(b, &i); err != nil {
+		log.Printf("Failed to unmarshal: %+v -> %v\n", err, string(b))
 		return c.err3(ErrRPE, err, resp)
 	}
 
