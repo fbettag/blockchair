@@ -361,6 +361,7 @@ func (c *Client) GetAddressBalanceMassCheck(chain string, addrs []string) (resp 
 	}
 
 	resp = &MultiAddressResponse{}
-	var path = chain + "/addresses/balances?addresses=" + strings.Join(addrs, ",")
-	return resp, c.LoadResponse(path, resp, nil)
+	var path = chain + "/addresses/balances"
+	opts := map[string]string{"addresses": strings.Join(addrs, ",")}
+	return resp, c.LoadResponse(path, resp, opts)
 }
