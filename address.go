@@ -311,34 +311,37 @@ func (c *Client) GetAddressEthAdv(crypto string, address string, options map[str
 	return resp, c.LoadResponse(path, resp, options)
 }
 
-// MutliAddress struct for usage with GetMutlichainAddressCheck(Adv), sends type of crypto and address.
-type MutliAddress []struct {
-	currency, address string
+type SingleAddress struct {
+	Currency string
+	Address string
 }
 
-// GetMutlichainAddressCheck check multiple addresses from different blockchain via just one request. This can be useful if you're monitoring your own wallet or portfolio.
-func (c *Client) GetMutlichainAddressCheck(mutliAddress MutliAddress) (resp *DataMultichain, e error) {
-	return c.GetMutlichainAddressCheckAdv(mutliAddress, nil)
+// MultiAddress struct for usage with GetMultichainAddressCheck(Adv), sends type of crypto and address.
+type MultiAddress []SingleAddress
+
+// GetMultichainAddressCheck check multiple addresses from different blockchain via just one request. This can be useful if you're monitoring your own wallet or portfolio.
+func (c *Client) GetMultichainAddressCheck(mutliAddress MultiAddress) (resp *DataMultichain, e error) {
+	return c.GetMultichainAddressCheckAdv(mutliAddress, nil)
 }
 
-// GetMutlichainAddressCheckAdv check multiple addresses from different blockchain via just one request. This can be useful if you're monitoring your own wallet or portfolio with options.
-func (c *Client) GetMutlichainAddressCheckAdv(mutliAddress MutliAddress, options map[string]string) (resp *DataMultichain, e error) {
+// GetMultichainAddressCheckAdv check multiple addresses from different blockchain via just one request. This can be useful if you're monitoring your own wallet or portfolio with options.
+func (c *Client) GetMultichainAddressCheckAdv(mutliAddress MultiAddress, options map[string]string) (resp *DataMultichain, e error) {
 	if len(mutliAddress) >= 100 { // max 100 addresses
 		return nil, c.err1(ErrMAX)
 	}
 	ethCount := 0
 	var formatMultiAddr []string
 	for j := range mutliAddress {
-		if e = c.ValidateCryptoMultichain(mutliAddress[j].currency); e != nil {
+		if e = c.ValidateCryptoMultichain(mutliAddress[j].Currency); e != nil {
 			return
 		}
-		if mutliAddress[j].currency == "ethereum" {
+		if mutliAddress[j].Currency == "ethereum" {
 			ethCount++
 			if ethCount > 1 {
 				return nil, c.err1(ErrETH)
 			}
 		}
-		formatMultiAddr = append(formatMultiAddr, mutliAddress[j].currency+":"+mutliAddress[j].address)
+		formatMultiAddr = append(formatMultiAddr, mutliAddress[j].Currency+":"+mutliAddress[j].Address)
 	}
 
 	resp = &DataMultichain{}
