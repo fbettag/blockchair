@@ -24,8 +24,8 @@ type DataMultichain struct {
 }
 
 type MultiAddressResponse struct {
-	Data    map[string]json.Number `json:"data"`
-	Context Context                `json:"context"`
+	Data    map[string]uint64 `json:"data"`
+	Context Context           `json:"context"`
 }
 
 // DataAddresses includes full server response to addresses request.
