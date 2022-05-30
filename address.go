@@ -23,6 +23,11 @@ type DataMultichain struct {
 	Context Context        `json:"context"`
 }
 
+type MultiAddressResponse struct {
+	Data    map[string]uint64 `json:"data"`
+	Context Context           `json:"context"`
+}
+
 // DataAddresses includes full server response to addresses request.
 type DataAddresses struct {
 	Data    AddressesInfo  `json:"data"`
@@ -313,7 +318,7 @@ func (c *Client) GetAddressEthAdv(crypto string, address string, options map[str
 
 type SingleAddress struct {
 	Currency string
-	Address string
+	Address  string
 }
 
 // MultiAddress struct for usage with GetMultichainAddressCheck(Adv), sends type of crypto and address.
@@ -347,4 +352,15 @@ func (c *Client) GetMultichainAddressCheckAdv(mutliAddress MultiAddress, options
 	resp = &DataMultichain{}
 	var path = "multi/dashboards/addresses/" + strings.Join(formatMultiAddr, ",")
 	return resp, c.LoadResponse(path, resp, options)
+}
+
+// GetAddressBalanceMassCheck check multiple addresses from the same blockchain via just one request.
+func (c *Client) GetAddressBalanceMassCheck(chain string, addrs []string) (resp *MultiAddressResponse, e error) {
+	if len(addrs) > 25000 { // max 100 addresses
+		return nil, c.err1(ErrMAX)
+	}
+
+	resp = &MultiAddressResponse{}
+	var path = chain + "addresses/balances?addresses=" + strings.Join(addrs, ",")
+	return resp, c.LoadResponse(path, resp, nil)
 }
