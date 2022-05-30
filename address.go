@@ -28,6 +28,10 @@ type MultiAddressResponse struct {
 	Context Context           `json:"context"`
 }
 
+type ContextResponse struct {
+	Context Context `json:"context"`
+}
+
 // DataAddresses includes full server response to addresses request.
 type DataAddresses struct {
 	Data    AddressesInfo  `json:"data"`

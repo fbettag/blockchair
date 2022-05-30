@@ -199,9 +199,15 @@ func (c *Client) LoadResponse(path string, i interface{}, options map[string]str
 		return c.err3(ErrIRS, e, resp)
 	}
 
-	if err := json.Unmarshal(b, &i); err != nil {
-		log.Printf("Failed to unmarshal: %+v -> %v\n", err, string(b))
+	var ctxResp ContextResponse
+	if err := json.Unmarshal(b, &ctxResp); err != nil {
 		return c.err3(ErrRPE, err, resp)
+	}
+
+	if ctxResp.Context.Results > 0 {
+		if err := json.Unmarshal(b, &i); err != nil {
+			return c.err3(ErrRPE, err, resp)
+		}
 	}
 
 	return nil
