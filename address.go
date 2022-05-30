@@ -24,7 +24,7 @@ type DataMultichain struct {
 }
 
 type MultiAddressResponse struct {
-	Data    map[string]uint64 `json:"data"`
+	Data    map[string]uint64 `json:"data,omitempty"`
 	Context Context           `json:"context"`
 }
 
